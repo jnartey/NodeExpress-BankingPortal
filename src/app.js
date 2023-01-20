@@ -63,12 +63,12 @@ app.post('/transfer', (req, res) => {
   //Getting post values
   //const {from, to, amount} = req.body;
   const from = req.body.from;
-  const to = req.body.tp;
+  const to = req.body.to;
   const amount = req.body.amount;
 
   //Calculating new balances
-  accounts[`${from}`].balance = parseInt(accounts[from].balance) - parseInt(amount);
-  accounts[`${to}`].balance = parseInt(accounts[to].balance) + parseInt(amount);
+  accounts[from].balance = parseInt(accounts[from].balance) - parseInt(amount);
+  accounts[to].balance = parseInt(accounts[to].balance) + parseInt(amount);
 
   //Storing JSON string in accountJSON variable
   const accountsJSON = JSON.stringify(accounts);
