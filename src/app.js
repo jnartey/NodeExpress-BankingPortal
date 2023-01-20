@@ -64,7 +64,7 @@ app.post('/transfer', (req, res) => {
   accounts[to].balance = parseInt(accounts[to].balance) + parseInt(amount);
 
   writeJSON();
-  res.redirect('/transfer', {message: "Transfer Completed"});
+  res.render('/transfer', {message: "Transfer Completed"});
 
 });
 
