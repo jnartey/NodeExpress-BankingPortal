@@ -70,6 +70,9 @@ app.post('/transfer', (req, res) => {
   accounts[from].balance = parseInt(accounts[from].balance) - parseInt(amount);
   accounts[to].balance = parseInt(accounts[to].balance) + parseInt(amount);
 
+  console.log("from",accounts[from].balance);
+  console.log("to",accounts[to].balance);
+
   //Storing JSON string in accountJSON variable
   const accountsJSON = JSON.stringify(accounts);
 
@@ -78,7 +81,7 @@ app.post('/transfer', (req, res) => {
     fs.writeFileSync(path.join(__dirname, '/json/accounts.json'), accountsJSON, 'utf8');
     res.render('transfer', {message: "Transfer Completed"});
   } catch (error) {
-    res.render('transfer', {error});
+    res.redirect('/transfer', {error});
     console.error(error);
   }
 });
@@ -100,7 +103,7 @@ app.post('/payment', (req, res) => {
     fs.writeFileSync(path.join(__dirname, `/json/accounts.json`), accountsJSON, 'utf8');
     res.render('payment', { message: "Payment Successful", account: accounts.credit});
   } catch (error) {
-    res.render('payment', {error});
+    res.redirect('/payment', {error});
     console.error(error);
   }
 
