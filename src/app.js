@@ -4,6 +4,7 @@ const express = require('express');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const {accounts, users, writeJSON} = require("./data");
 
 //Setting views and ejs template engine
 app.set('views', path.join(__dirname, '/views'));
@@ -14,14 +15,6 @@ app.use(express.static(path.join(__dirname, '/public/')));
 
 //Middleware to handle Post data
 app.use(express.urlencoded({extended:true}));
-
-//Reading data from json files
-const accountData = fs.readFileSync(path.join(__dirname, '/json/accounts.json'), {encoding:'UTF8'});
-const accounts = JSON.parse(accountData);
-
-const userData = fs.readFileSync(path.join(__dirname, '/json/users.json'), {encoding:'UTF8'});
-const users = JSON.parse(userData);
-
 
 //Routes
 app.get('/', (req, res) => {
@@ -70,17 +63,9 @@ app.post('/transfer', (req, res) => {
   accounts[from].balance = parseInt(accounts[from].balance) - parseInt(amount);
   accounts[to].balance = parseInt(accounts[to].balance) + parseInt(amount);
 
-  //Storing JSON string in accountJSON variable
-  const accountsJSON = JSON.stringify(accounts);
+  writeJSON();
+  res.redirect('/transfer', {message: "Transfer Completed"});
 
-  try {
-    console.log(path.join(__dirname, '/json/accounts.json'));
-    fs.writeFileSync(path.join(__dirname, '/json/accounts.json'), accountsJSON, 'utf8');
-    res.render('transfer', {message: "Transfer Completed"});
-  } catch (error) {
-    res.redirect('/transfer', {error});
-    console.error(error);
-  }
 });
 
 app.get('/payment', (req, res) => {
@@ -89,20 +74,12 @@ app.get('/payment', (req, res) => {
 
 app.post('/payment', (req, res) => {
   //Getting post values
-  const amount = req.body.amount;
+  let amount = req.body.amount;
   accounts.credit.balance = parseInt(accounts.credit.balance) - parseInt(amount);
   accounts.credit.available = parseInt(accounts.credit.available) + parseInt(amount);
 
-  //Storing JSON string in accountJSON variable
-  const accountsJSON = JSON.stringify(accounts);
-
-  try {
-    fs.writeFileSync(path.join(__dirname, `/json/accounts.json`), accountsJSON, 'utf8');
-    res.render('payment', { message: "Payment Successful", account: accounts.credit});
-  } catch (error) {
-    res.redirect('/payment', {error});
-    console.error(error);
-  }
+  writeJSON();
+  res.render('payment', { message: "Payment Successful", account: accounts.credit});
 
 });
 
