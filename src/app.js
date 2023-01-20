@@ -61,7 +61,10 @@ app.get('/transfer', (req, res) => {
 
 app.post('/transfer', (req, res) => {
   //Getting post values
-  const {from, to, amount} = req.body;
+  //const {from, to, amount} = req.body;
+  const from = req.body.from;
+  const to = req.body.tp;
+  const amount = req.body.amount;
 
   //Calculating new balances
   accounts[from].balance = parseInt(accounts[from].balance) - parseInt(amount);
